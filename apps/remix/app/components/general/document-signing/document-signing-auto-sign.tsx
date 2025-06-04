@@ -155,6 +155,9 @@ export const DocumentSigningAutoSign = ({ recipient, fields }: DocumentSigningAu
     }
 
     await revalidate();
+    
+    // Close the dialog after successful signing
+    setOpen(false);
   };
 
   unsafe_useEffectOnce(() => {
@@ -180,7 +183,10 @@ export const DocumentSigningAutoSign = ({ recipient, fields }: DocumentSigningAu
           </p>
 
           <ul className="mt-4 flex list-inside list-disc flex-col gap-y-0.5">
-            {AUTO_SIGNABLE_FIELD_TYPES.map((fieldType) => (
+            {AUTO_SIGNABLE_FIELD_TYPES.filter((fieldType) => {
+              // Only show field types that have matching fields
+              return autoSignableFields.filter((f) => f.type === fieldType).length > 0;
+            }).map((fieldType) => (
               <li key={fieldType}>
                 <Trans>{_(FRIENDLY_FIELD_TYPE[fieldType as FieldType])}</Trans>
                 <span className="pl-2 text-sm">
